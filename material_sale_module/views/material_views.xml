@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Action -->
+    <record id="action_material_registry" model="ir.actions.act_window">
+        <field name="name">Materials</field>
+        <field name="res_model">material.registry</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Buat material pertama Anda
+            </p>
+            <p>Gunakan filter Material Type untuk menyaring data.</p>
+        </field>
+    </record>
+
+    <!-- Menu -->
+    <menuitem id="menu_material_root" name="Materials" sequence="10"/>
+    <menuitem id="menu_material_registry" name="Materials" parent="menu_material_root"
+              action="action_material_registry" sequence="10"/>
+
+    <!-- Tree View -->
+    <record id="view_material_registry_tree" model="ir.ui.view">
+        <field name="name">material.registry.tree</field>
+        <field name="model">material.registry</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="code"/>
+                <field name="name"/>
+                <field name="material_type"/>
+                <field name="buy_price" sum="Buy Price"/>
+                <field name="supplier_id" domain="[('supplier_rank','>',0)]"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_material_registry_form" model="ir.ui.view">
+        <field name="name">material.registry.form</field>
+        <field name="model">material.registry</field>
+        <field name="arch" type="xml">
+            <form string="Material">
+                <sheet>
+                    <group>
+                        <field name="code" required="1"/>
+                        <field name="name" required="1"/>
+                    </group>
+                    <group>
+                        <field name="material_type" required="1"/>
+                        <field name="buy_price" required="1"/>
+                        <field name="supplier_id" required="1" options="{'no_open': False, 'no_create_edit': False}"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_material_registry_search" model="ir.ui.view">
+        <field name="name">material.registry.search</field>
+        <field name="model">material.registry</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="code" string="Code"/>
+                <field name="name" string="Name"/>
+                <field name="supplier_id" string="Supplier"/>
+
+                <filter name="type_fabric" string="Fabric" domain="[('material_type','=','fabric')]"/>
+                <filter name="type_jeans" string="Jeans" domain="[('material_type','=','jeans')]"/>
+                <filter name="type_cotton" string="Cotton" domain="[('material_type','=','cotton')]"/>
+
+                <group expand="0" string="Group By">
+                    <filter string="Material Type" name="group_by_material_type" context="{'group_by':'material_type'}"/>
+                    <filter string="Supplier" name="group_by_supplier" context="{'group_by':'supplier_id'}"/>
+                </group>
+
+                <searchpanel>
+                    <field name="supplier_id" string="Supplier" icon="fa-user"/>
+                </searchpanel>
+            </search>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_material_suppliers" model="ir.actions.act_window">
+        <field name="name">Suppliers</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('supplier_rank','>',0)]</field>
+        <field name="context">
+            {
+                'default_supplier_rank': 1,
+                'default_company_type': 'company'
+            }
+        </field>
+    </record>
+
+    <menuitem id="menu_material_suppliers"
+              name="Suppliers"
+              parent="menu_material_root"
+              action="action_material_suppliers"
+              sequence="20"/>
+
+    <record id="view_partner_supplier_tree" model="ir.ui.view">
+        <field name="name">res.partner.supplier.tree</field>
+        <field name="model">res.partner</field>
+        <field name="priority" eval="20"/>
+        <field name="arch" type="xml">
+            <tree string="Suppliers" create="true" delete="true">
+                <field name="name"/>
+                <field name="vat"/>
+                <field name="phone"/>
+                <field name="mobile"/>
+                <field name="email"/>
+                <field name="supplier_rank" invisible="1"/>
+                <field name="active"/>
+            </tree>
+        </field>
+    </record>
+
+
+    <record id="view_partner_supplier_search" model="ir.ui.view">
+        <field name="name">res.partner.supplier.search</field>
+        <field name="model">res.partner</field>
+        <field name="priority" eval="20"/>
+        <field name="arch" type="xml">
+            <search string="Search Suppliers">
+                <field name="name"/>
+                <field name="vat"/>
+                <field name="email"/>
+                <filter name="active_true" string="Active" domain="[('active','=',True)]" help="Show active suppliers"/>
+                <filter name="active_false" string="Archived" domain="[('active','=',False)]" help="Show archived suppliers"/>
+                <separator/>
+                <filter name="has_vat" string="Has VAT/NPWP" domain="[('vat','!=',False)]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Country" name="group_country" context="{'group_by':'country_id'}"/>
+                    <filter string="Company" name="group_company" context="{'group_by':'company_id'}" groups="base.group_multi_company"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_material_suppliers_tree_view" model="ir.actions.act_window.view">
+        <field name="sequence" eval="1"/>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="view_partner_supplier_tree"/>
+        <field name="act_window_id" ref="action_material_suppliers"/>
+    </record>
+</odoo>
